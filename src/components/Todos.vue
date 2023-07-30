@@ -4,15 +4,21 @@ https://todomvc.com/
 -->
 
 <script>
+import { ref, defineComponent } from "vue";
 const STORAGE_KEY = "vue-todomvc";
 
-const filters = {
+export const filters = {
   all: (todos) => todos,
   active: (todos) => todos.filter((todo) => !todo.completed),
   completed: (todos) => todos.filter((todo) => todo.completed),
 };
 
-export default {
+export const validateTodo = (todo) => {
+  if (!todo || todo.length > 10) return false;
+  return true;
+};
+
+export default defineComponent({
   // 初始化应用状态
   data: () => ({
     todos: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
@@ -53,9 +59,12 @@ export default {
 
     addTodo(e) {
       const value = e.target.value.trim();
-      if (!value) {
+      const valid = validateTodo(value);
+
+      if (!valid) {
         return;
       }
+
       this.todos.push({
         id: Date.now(),
         title: value,
@@ -103,7 +112,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <template>
