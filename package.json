@@ -7,7 +7,10 @@
     "test": "vitest",
     "cover": "vitest run --coverage",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "cypress:open": "cypress open",
+    "cypress:e2e": "cypress run --e2e",
+    "cypress:component": "cypress run --component"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +22,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitest/coverage-istanbul": "^0.33.0",
     "@vue/test-utils": "^2.4.1",
+    "cypress": "^12.17.2",
     "jsdom": "^22.1.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.7",
