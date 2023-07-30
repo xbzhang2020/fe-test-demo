@@ -2,20 +2,21 @@ import { describe, test, expect } from "vitest";
 import Todos, { filters, validateTodo } from "../src/components/Todos.vue";
 import { mount } from "@vue/test-utils";
 
-describe("Todos", () => {
-  test("任务过滤", () => {
-    const todos = [
-      { id: 1, title: "吃饭", completed: true },
-      { id: 2, title: "打游戏", completed: true },
-      { id: 3, title: "睡觉", completed: false },
-    ];
+const getDefaultTodos = () => [
+  { id: 1, title: "吃饭", completed: true },
+  { id: 2, title: "打游戏", completed: true },
+  { id: 3, title: "睡觉", completed: false },
+];
 
+describe("Todos", () => {
+  test("过滤任务", () => {
+    const todos = getDefaultTodos();
     expect(filters.all(todos).length).toEqual(3);
     expect(filters.completed(todos).length).toEqual(2);
     expect(filters.active(todos)).toContainEqual(todos[2]);
   });
 
-  test("任务名称长度校验", () => {
+  test("校验任务名称", () => {
     const normalText = "看电影";
     const longText = "在今年年底之前，读完100本书";
     expect(validateTodo("")).toBeFalsy();
@@ -40,13 +41,41 @@ describe("Todos", () => {
 
   test("完成任务", async () => {
     const wrapper = mount(Todos);
+    await wrapper.setData({ todos: getDefaultTodos() });
+    const todoView = wrapper.find("li.todo");
 
-    const todos = [
-      { id: 1, title: "吃饭", completed: true },
-      { id: 2, title: "打游戏", completed: true },
-      { id: 3, title: "睡觉", completed: false },
-    ];
+    await todoView.find("input[type=checkbox]").setValue(false);
+    expect(todoView.classes()).not.toContain("completed");
 
-    await wrapper.setData({ todos });
+    await todoView.find("input[type=checkbox]").setValue(true);
+    expect(todoView.classes()).toContain("completed");
+  });
+
+  test("删除任务", async () => {
+    const wrapper = mount(Todos);
+    const todos = getDefaultTodos();
+    await wrapper.setData({ todos: [...todos] });
+
+    expect(wrapper.findAll("li.todo").length).toBe(todos.length);
+
+    await wrapper.find("button.destroy").trigger("click");
+    expect(wrapper.findAll("li.todo").length).toBe(todos.length - 1);
+  });
+
+  test("编辑任务", async () => {
+    const wrapper = mount(Todos);
+    const todos = getDefaultTodos();
+    await wrapper.setData({ todos: [...todos] });
+
+    const firstTodoView = wrapper.find("li.todo");
+    expect(firstTodoView.text()).toBe(todos[0].title);
+
+    // 模拟双击
+    await firstTodoView.find("label").trigger("dblclick");
+
+    // 修改输入
+    const newTodo = "吃饭饭";
+    await firstTodoView.find("input[type=text]").setValue(newTodo);
+    expect(firstTodoView.text()).toBe(newTodo);
   });
 });
