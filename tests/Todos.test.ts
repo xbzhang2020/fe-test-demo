@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
-import { filters, validateTodo } from "../src/components/Todos.vue";
+import Todos, { filters, validateTodo } from "../src/components/Todos.vue";
+import { mount } from "@vue/test-utils";
 
 describe("Todos", () => {
   test("任务过滤", () => {
@@ -20,5 +21,21 @@ describe("Todos", () => {
     expect(validateTodo("")).toBeFalsy();
     expect(validateTodo(normalText)).toBeTruthy();
     expect(validateTodo(longText)).toBeFalsy();
+  });
+
+  test("添加任务", async () => {
+    const wrapper = mount(Todos);
+
+    const todo = "看电影";
+
+    // 输入任务名
+    const input = wrapper.find("input.new-todo");
+    await input.setValue(todo);
+    // expect(input.element.value).toBe(todo);
+
+    // 添加输入按钮
+    await input.trigger("keyup.enter");
+    const todos = wrapper.find("ul.todo-list");
+    expect(todos.text()).toContain(todo);
   });
 });

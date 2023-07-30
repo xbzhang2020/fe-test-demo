@@ -23,6 +23,7 @@ export default defineComponent({
   data: () => ({
     todos: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
     editedTodo: null,
+    inputTodo: '',
     visibility: "all",
   }),
 
@@ -120,6 +121,8 @@ export default defineComponent({
     <header class="header">
       <h1>todos</h1>
       <input
+        v-model="inputTodo"
+        type="text"
         class="new-todo"
         autofocus
         placeholder="What needs to be done?"
