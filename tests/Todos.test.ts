@@ -25,7 +25,6 @@ describe("Todos", () => {
 
   test("添加任务", async () => {
     const wrapper = mount(Todos);
-
     const todo = "看电影";
 
     // 输入任务名
@@ -37,5 +36,17 @@ describe("Todos", () => {
     await input.trigger("keyup.enter");
     const todos = wrapper.find("ul.todo-list");
     expect(todos.text()).toContain(todo);
+  });
+
+  test("完成任务", async () => {
+    const wrapper = mount(Todos);
+
+    const todos = [
+      { id: 1, title: "吃饭", completed: true },
+      { id: 2, title: "打游戏", completed: true },
+      { id: 3, title: "睡觉", completed: false },
+    ];
+
+    await wrapper.setData({ todos });
   });
 });
