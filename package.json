@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "cover": "vitest run --coverage",
     "dev": "vite",
     "build": "vite build",
+    "vitest": "vitest run",
+    "vitest:cover": "vitest run --coverage",
     "cypress:open": "cypress open",
     "cypress:e2e": "cypress run --e2e",
     "cypress:component": "cypress run --component"
