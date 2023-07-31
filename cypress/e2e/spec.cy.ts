@@ -15,14 +15,15 @@ describe("Todos", () => {
   it("数据持久化", () => {
     cy.visit("/");
 
-    cy.get('body').should('not.contain.text', 'todos')
+    cy.get('body').should('contain.text', 'todos')
     cy.get(".todo").should("contain.text", todos[0].title);
     cy.get(".todo").should("have.class", "completed");
   });
 
   it("错误处理", () => {
-    cy.visit("/hello");
+    cy.visit("/#/hello");
 
     cy.get('body').should('not.contain.text', 'todos')
+    cy.get('body').should('contain.text', '404')
   });
 });
