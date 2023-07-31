@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import Todos, { filters, validateTodo } from "../src/components/Todos.vue";
+import Todos, { filters, validateTodo } from "../src/pages/todos/Todos.vue";
 import { mount } from "@vue/test-utils";
 
 const getDefaultTodos = () => [

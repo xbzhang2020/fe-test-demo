@@ -1,10 +1,8 @@
-<script setup lang="ts">
-import Todos from "./components/Todos.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
-    <Todos />
+    <router-view></router-view>
   </div>
 </template>
 
