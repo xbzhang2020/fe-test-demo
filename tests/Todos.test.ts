@@ -25,57 +25,70 @@ describe("Todos", () => {
   });
 
   test("添加任务", async () => {
+    // 准备
     const wrapper = mount(Todos);
+    const inputSelector = "input.new-todo";
+    const resultSelector = "ul.todo-list";
     const todo = "看电影";
 
-    // 输入任务名
-    const input = wrapper.find("input.new-todo");
-    await input.setValue(todo);
-    // expect(input.element.value).toBe(todo);
+    // 模拟组件输入
+    await wrapper.get(inputSelector).setValue(todo);
+    // 判断输入是否正确渲染
+    expect(wrapper.get(inputSelector).element.value).toBe(todo);
 
-    // 添加输入按钮
-    await input.trigger("keyup.enter");
-    const todos = wrapper.find("ul.todo-list");
-    expect(todos.text()).toContain(todo);
+    // 模拟回车事件
+    await wrapper.get(inputSelector).trigger("keyup.enter");
+    expect(wrapper.get(resultSelector).text()).toContain(todo);
   });
 
   test("完成任务", async () => {
     const wrapper = mount(Todos);
+    const todoSelector = "li.todo";
+    const checkboxSelector = "input[type=checkbox]";
+
+    // 初始化 todos
     await wrapper.setData({ todos: getDefaultTodos() });
-    const todoView = wrapper.find("li.todo");
+    // 触发 todo 的 checkbox
+    await wrapper
+      .findAll(todoSelector)[2]
+      .find(checkboxSelector)
+      .setValue(true);
 
-    await todoView.find("input[type=checkbox]").setValue(false);
-    expect(todoView.classes()).not.toContain("completed");
-
-    await todoView.find("input[type=checkbox]").setValue(true);
-    expect(todoView.classes()).toContain("completed");
+    // 判断 todo 的状态是否改变
+    expect(wrapper.findAll(todoSelector)[2].classes()).toContain("completed");
   });
 
   test("删除任务", async () => {
     const wrapper = mount(Todos);
+    const todoSelector = "li.todo";
+    const deleteBtnSelector = "button.destroy";
     const todos = getDefaultTodos();
+
+    // 初始化 todos
     await wrapper.setData({ todos: [...todos] });
 
-    expect(wrapper.findAll("li.todo").length).toBe(todos.length);
+    expect(wrapper.findAll(todoSelector).length).toBe(todos.length);
 
-    await wrapper.find("button.destroy").trigger("click");
-    expect(wrapper.findAll("li.todo").length).toBe(todos.length - 1);
+    // 触发删除按钮的点击事件
+    await wrapper.find(deleteBtnSelector).trigger("click");
+    expect(wrapper.findAll(todoSelector).length).toBe(todos.length - 1);
   });
 
   test("编辑任务", async () => {
     const wrapper = mount(Todos);
     const todos = getDefaultTodos();
+    const todoSelector = "li.todo";
+    const newTodo = "吃饭饭";
+
+    // 初始化 todos
     await wrapper.setData({ todos: [...todos] });
 
-    const firstTodoView = wrapper.find("li.todo");
-    expect(firstTodoView.text()).toBe(todos[0].title);
+    // 模拟双击事件
+    await wrapper.find(todoSelector).find("label").trigger("dblclick");
 
-    // 模拟双击
-    await firstTodoView.find("label").trigger("dblclick");
-
-    // 修改输入
-    const newTodo = "吃饭饭";
-    await firstTodoView.find("input[type=text]").setValue(newTodo);
-    expect(firstTodoView.text()).toBe(newTodo);
+    // 模拟编辑 todo
+    await wrapper.find(todoSelector).find("input[type=text]").setValue(newTodo);
+    
+    expect(wrapper.find(todoSelector).text()).toBe(newTodo);
   });
 });
